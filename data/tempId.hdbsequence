@@ -1,0 +1,3 @@
+schema= "IOT";
+start_with= 2;
+depends_on_table= "iot.data::sensors.temp";

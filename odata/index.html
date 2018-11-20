@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+ 
+<html lang="en">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+<title>IoT Web Application</title>
+
+</head>
+
+
+<body>
+<p>IoT Web Application</p>
+<p>ODATA Folder</p>
+<a href="sensors.xsodata">Sensors ODATA Service Document</a><br />
+<a href="sensors.xsodata/$metadata">Sensors ODATA Metadata</a><br />
+<a href="sensors.xsodata/temp/$count">Number of Temp Readings</a><br />
+<a href="sensors.xsodata/temp/?$top=5&$orderby=created+desc&$format=json" target="last5">Recent 5 Temp Readings</a><br />
+<a href="test.html" target="test">Test Post a random temp.</a><br />
+
+<p>Sample GET Temps</p>
+<pre>
+GET /iot/odata/sensors.xsodata/temp/ HTTP/1.1
+Host: &lt;your host IP&gt;:8000
+Accept: application/json
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+{
+    "d": 
+    {
+    "results": 
+    [
+    {
+        "__metadata": 
+        {
+            "type": "IOT.odata.tempType",
+            "uri": "https://sfpbd5948dd7.us1.hana.ondemand.com:443/iot/odata/sensors.xsodata/temp(4)"
+        },
+        "tempId": 4,
+        "tempVal": 95,
+        "ts": "/Date(1455257499072)/",
+        "created": "/Date(1455257499106)/"
+    },
+    {
+        "__metadata": 
+        {
+            "type": "IOT.odata.tempType",
+            "uri": "https://sfpbd5948dd7.us1.hana.ondemand.com:443/iot/odata/sensors.xsodata/temp(3)"
+        },
+        "tempId": 3,
+        "tempVal": 102,
+        "ts": "/Date(1455235497252)/",
+        "created": "/Date(1455235497362)/"
+    }
+    ]
+    }
+
+}
+</pre>
+
+<p>Sample POST Temp</p>
+<pre>
+POST /iot/odata/sensors.xsodata/temp HTTP/1.1
+Host: &lt;your host IP&gt;:8000
+Accept: application/json
+Content-Type: application/json; charset=UTF-8
+Content-Length: 115
+Connection: keep-alive
+
+{
+  "tempId": 0,
+  "tempVal": 109,
+  "ts": "/Date(1454534444123)/",
+  "created": "/Date(1354665600000)/"
+}    
+
+HTTP/1.1 201 Created
+content-type: application/json
+content-length: 176
+location: http://&lt;your host IP&gt;:8000/iot/odata/sensors.xsodata/temp(13)
+cache-control: no-cache, no-store
+date: Thu, 04 Feb 2016 05:32:00 GMT
+content-encoding: gzip
+
+{
+	"d": {
+		"__metadata": {
+			"type": "IOT.odata.tempType",
+			"uri": "http://&lt;your host IP&gt;:8000/iot/odata/sensors.xsodata/temp(13)"
+		},
+		"tempId": 13,
+		"tempVal": 109,
+		"ts": "\/Date(1454534444000)\/",
+		"created": "\/Date(1454563920406)\/"
+	}
+}
+    
+</pre>
+    
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+If the contents of the iot.zip file need to change,
+
+1. Download it.
+2. Unzip it.
+3. Remove local iot.zip file.
+4. Make changes
+5. Perform these steps.
+
+$ mv .xsaccess xsaccess
+$ rm -f .xsapp
+$ rm -f files/iot.zip
+
+6. Compress the iot folder back into iot.zip
+7. Upload it overwriting the existing iot.zip

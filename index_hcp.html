@@ -1,0 +1,566 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+<title>HCP IoT Web Application</title>
+
+<!--  ===== Start Landscape Script =====  -->
+<script>
+function createCookie(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) { 
+            return c.substring(nameEQ.length,c.length);
+        }
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name,"",-1);
+}
+
+function testCookie() {
+    createCookie('dacookie','testcookie',7);
+
+    var x = readCookie('dacookie')
+    if (x) {
+        alert("dacookie is:" + x);
+    }    
+}
+
+
+// HCP US startUpFocus
+// https://sfpbd5948dd7.us1.hana.ondemand.com/sap/hana/ide/
+var gVars = {
+        'selected': "your account.  Click [Configure Settings] above to select a configuration and modify the fields as needed.",
+        'https': "https://",
+        'host': ".hanatrial.ondemand.com",
+        'port': "",
+        'account': "accountname+trial",
+        'dbname': "dbname",
+        'iduser': "SAP-ID username",
+        'idpass': "SAP-ID password",
+        'dbuser': "SYSTEM",
+        'dbpass': "Automatic"
+    };
+
+function getVarsFromCookies() {
+    
+    var output = "";
+    var cookieval = null;
+    for (var key in gVars) {
+        cookieval = readCookie(key);
+        if (cookieval) {
+            gVars[key] = cookieval;
+        }
+        output += key + ': ' + gVars[key] + "\n";
+    }
+    
+    document.getElementById("content").innerHTML = "<pre>\n" + output + "</pre>\n";
+
+}
+
+function setVarsToCookies() {
+    
+    var output = "";
+    
+    for (var key in gVars) {
+        eraseCookie(key);
+        if (gVars[key].length > 0) {
+            createCookie(key,gVars[key],7);
+        }
+        output += key + ': ' + gVars[key] + "\n";
+    }
+    
+    document.getElementById("content").innerHTML = "<pre>\n" + output + "</pre>\n";
+
+}
+
+function clearVarsAndCookies() {
+    
+    var output = "";
+    
+    for (var key in gVars) {
+        eraseCookie(key);
+        gVars[key] = "";
+        output += key + ': ' + "cleared" + "\n";
+    }
+    
+    document.getElementById("content").innerHTML = "<pre>\n" + output + "</pre>\n";
+}
+
+function getHANAname() {
+    var full = "";
+
+    full += gVars.https;
+    full += gVars.dbname;
+    full += gVars.account;
+    full += gVars.host;
+    full += gVars.port;
+
+    return(full);
+}
+
+function getHCPname() {
+    var full = "";
+
+    full += gVars.https;
+    full += "account";
+    full += gVars.host;
+    full += "/cockpit#/acc/";
+    full += gVars.account;
+
+    return(full);
+}
+
+function getCockpitURL() {
+    // https://account.us1.hana.ondemand.com/cockpit#/acc/bd5948dd7/accountdashboard
+    var url = "";
+    url += getHCPname();
+    url += "/accountdashboard";
+    
+    return(url);
+}
+
+function getSubscriptionsURL() {
+    var url = "";
+    url += getHCPname();
+    url += "/subscriptions";
+    
+    return(url);
+}
+
+function getWorkbenchURL() {
+    // https://sfpbd5948dd7.us1.hana.ondemand.com/sap/hana/ide/
+    var url = "";
+    url += getHANAname();
+    url += "/sap/hana/";
+    
+    return(url);
+}
+
+function getEditorURL() {
+    var url = "";
+    url += getWorkbenchURL();
+    url += "ide/editor/";
+    
+    return(url);
+}
+
+function getCatalogURL() {
+    var url = "";
+    url += getWorkbenchURL();
+    url += "ide/catalog/";
+    
+    return(url);
+}
+
+function getSecurityURL() {
+    var url = "";
+    url += getWorkbenchURL();
+    url += "ide/security/";
+    
+    return(url);
+}
+ 
+function getXSAdminURL() {
+    var url = "";
+    url += getWorkbenchURL();
+    url += "xs/admin/";
+    
+    return(url);
+}
+https://account.hanatrial.ondemand.com/cockpit#/acc/i830671trial/dbs/hcp/overview
+
+function getDBSAdminURL() {
+    var url = "";
+    url += getHCPname();
+    url += "/dbs/";
+    url += gVars.dbname;
+    url += "/overview";
+    
+    return(url);
+}
+
+function fixupLinks() {
+    document.getElementById("selected_id").innerHTML = gVars.selected;
+
+    document.getElementById("cockpit_un").innerHTML = gVars.iduser;
+    document.getElementById("cockpit_pw").innerHTML = gVars.idpass;
+    
+    document.getElementById("cockpit_id").innerHTML = getCockpitURL();
+    document.getElementById("cockpit_id").setAttribute("href", getCockpitURL());
+
+    //document.getElementById("subscriptions_id").innerHTML = getSubscriptionsURL();
+    //document.getElementById("subscriptions_id").setAttribute("href", getSubscriptionsURL());
+    
+    document.getElementById("dbsadmin_id").innerHTML = getDBSAdminURL();
+    document.getElementById("dbsadmin_id").setAttribute("href", getDBSAdminURL());
+    
+    
+    document.getElementById("workbench_un").innerHTML = gVars.dbuser;
+    document.getElementById("workbench_un2").innerHTML = gVars.dbuser;
+    document.getElementById("workbench_pw").innerHTML = gVars.dbpass;
+    
+    //document.getElementById("workbench_id").innerHTML = getWorkbenchURL() + "ide/";
+    document.getElementById("workbench_id").setAttribute("href", getWorkbenchURL() + "ide/");
+
+    document.getElementById("editor_id").innerHTML = getEditorURL();
+    document.getElementById("editor_id").setAttribute("href", getEditorURL());
+
+    // document.getElementById("catalog_id").innerHTML = getCatalogURL();
+    // document.getElementById("catalog_id").setAttribute("href", getCatalogURL());
+
+    // document.getElementById("security_id").innerHTML = getSecurityURL();
+    // document.getElementById("security_id").setAttribute("href", getSecurityURL());
+
+    // document.getElementById("xsadmin_id").innerHTML = getXSAdminURL();
+    // document.getElementById("xsadmin_id").setAttribute("href", getXSAdminURL());
+
+    document.getElementById("new_id").innerHTML = getHANAname() + "/iot/";
+    document.getElementById("new_id").setAttribute("href", getHANAname() + "/iot/");
+}
+
+function changeVars() {
+    switch(document.getElementById("landscape_select").value) {
+        //<option value="RAGNAR">Ragnar On-Prem</option>
+        case "RAGNAR":
+            gVars.selected = "RAGNAR On-Prem";
+            gVars.https = "http://";
+            gVars.host = "ragnar.lcfx.net";
+            gVars.port = ":8000";
+            gVars.account = "";
+            gVars.dbname = "";
+            gVars.iduser = "";
+            gVars.idpass = "";
+            gVars.dbuser = "I830671";
+            gVars.dbpass = "Pro???###%";
+            break;
+            
+        //<option value="TI830671">HCP Trial I830671</option>
+        case "TI830671":
+            gVars.selected = "HCP Trial I830671";
+            gVars.https = "https://";
+            gVars.host = ".hanatrial.ondemand.com";
+            gVars.port = "";
+            gVars.account = "i830671trial";
+            gVars.dbname = "hcp";
+            gVars.iduser = "I830671";
+            gVars.idpass = "SAP-ID pw";
+            gVars.dbuser = "SYSTEM";
+            gVars.dbpass = "Plak848!";
+            break;
+            
+        //<option value="TP1941413538">HCP Trial P1941413538</option>
+        case "TP1941413538":
+            gVars.selected = "HCP Trial P1941413538";
+            gVars.https = "https://";
+            gVars.host = ".hanatrial.ondemand.com";
+            gVars.port = "";
+            gVars.account = "p1941413538trial";
+            gVars.dbname = "mdc";
+            gVars.iduser = "P1941413538";
+            gVars.idpass = "Plak848!";
+            gVars.dbuser = "SYSTEM";
+            gVars.dbpass = "Plak848!";
+            break;
+  
+        //<option value="PEUb7715e29c">HCP Prod EU SFP Workshop</option>
+        case "PEUb7715e29c":
+            gVars.selected = "HCP EU S.F Workshop";
+            gVars.https = "https://";
+            gVars.host = ".hana.ondemand.com";
+            gVars.port = "";
+            gVars.account = "b7715e29c";
+            gVars.dbname = "sfp";
+            gVars.iduser = "I830671";
+            gVars.idpass = "SAP-ID pw";
+            gVars.dbuser = "I830671";
+            gVars.dbpass = "Des??m###%";
+            break;
+  
+        //<option value="PUSbd5948dd7">HCP Prod US Startup Focus</option>
+        case "PUSbd5948dd7":
+            gVars.selected = "HCP US StartupFocus";
+            gVars.https = "https://";
+            gVars.host = ".us1.hana.ondemand.com";
+            gVars.port = "";
+            gVars.account = "bd5948dd7";
+            gVars.dbname = "sfp";
+            gVars.iduser = "I830671";
+            gVars.idpass = "SAP-ID pw";
+            gVars.dbuser = "I830671";
+            gVars.dbpass = "Den???###%";
+            break;
+  
+           
+        case "ANYHCPEU":
+            gVars.selected = "HCP EU use your credentials";
+            gVars.https = "https://";
+            gVars.host = ".hana.ondemand.com";
+            gVars.port = "";
+            gVars.account = "accountname";
+            gVars.dbname = "dbname";
+            gVars.iduser = "SAP-ID un";
+            gVars.idpass = "SAP-ID pw";
+            gVars.dbuser = "SAP-ID un";
+            gVars.dbpass = "PasswordYouSet";
+            break;
+            
+        case "ANYHCPUS":
+            gVars.selected = "HCP US use your credentials";
+            gVars.https = "https://";
+            gVars.host = ".us1.hana.ondemand.com";
+            gVars.port = "";
+            gVars.account = "accountname";
+            gVars.dbname = "dbname";
+            gVars.iduser = "SAP-ID un";
+            gVars.idpass = "SAP-ID pw";
+            gVars.dbuser = "SAP-ID un";
+            gVars.dbpass = "PasswordYouSet";
+            break;
+            
+        case "ANYHCPTRIAL":
+            gVars.selected = "HCP Trial use your credentials";
+            gVars.https = "https://";
+            gVars.host = ".hanatrial.ondemand.com";
+            gVars.port = "";
+            gVars.account = "accountnametrial";
+            gVars.dbname = "dbname";
+            gVars.iduser = "SAP-ID un";
+            gVars.idpass = "SAP-ID pw";
+            gVars.dbuser = "SYSTEM";
+            gVars.dbpass = "Automatic";
+            break;
+    }
+    setVarsToCookies();
+    createForm();
+    fixupLinks();
+    if (gVars.port == "") {
+        showHCPitems();
+    }
+    else {
+        hideHCPitems();
+    }
+}
+
+function saveForm() {
+    var x = document.getElementById("settings_form");
+    var text = "";
+    var i;
+    for (i = 0; i < x.length ;i++) {
+        text += x.elements[i].name + ": " + x.elements[i].value + "<br>";
+        gVars[x.elements[i].name] = x.elements[i].value;
+    }
+    document.getElementById("demo").innerHTML = text;
+    setVarsToCookies();
+    fixupLinks();
+    hideForms();
+}
+
+function createForm() {
+    var output = "";
+    
+    for (var key in gVars) {
+        output += key + ": <input type=\"text\" size=\"30\" name=\"" + key + "\" value=\"" + gVars[key] + "\"><br>\n";
+    }
+
+    document.getElementById("settings_form").innerHTML = output;
+}
+
+function showForms() {
+    document.getElementById("config_forms_on").setAttribute("style", "display: block");
+    document.getElementById("config_forms_off").setAttribute("style", "display: none");
+}
+
+function hideForms() {
+    document.getElementById("config_forms_on").setAttribute("style", "display: none");
+    document.getElementById("config_forms_off").setAttribute("style", "display: block");
+}
+
+function showHCPitems() {
+    document.getElementById("hcp_items").setAttribute("style", "display: block");
+}
+
+function hideHCPitems() {
+    document.getElementById("hcp_items").setAttribute("style", "display: none");
+} 
+
+</script>
+<!--  ===== End Landscape Script =====  -->
+
+</head>
+
+<body style="font-family: Tahoma, Geneva, sans-serif">
+<!--  ===== Start Landscape Controls =====  -->
+
+<div id="config_forms_on" style="display: none">
+<form id="landscape_form">
+    <select name="landscape_select" id="landscape_select" onchange="changeVars()">
+        <option value="NONE">Select Landscape</option>
+        <option value="RAGNAR">Ragnar On-Prem</option>
+        <option value="TI830671">HCP Trial I830671</option>
+        <option value="TP1941413538">HCP Trial P1941413538</option>
+        <option value="PEUb7715e29c">HCP Prod EU SFP Workshop</option>
+        <option value="PUSbd5948dd7">HCP Prod US Startup Focus</option>
+        <option value="ANYHCPEU">Any HCP EU Account</option>
+        <option value="ANYHCPUS">Any HCP US Account</option>
+        <option value="ANYHCPTRIAL">Any HCP Trial Account</option>
+    </select>
+</form>
+
+<form id="settings_form">
+  First name: <input type="text" name="fname" value="Donald"><br>
+  Last name: <input type="text" name="lname" value="Duck"><br><br>
+</form> 
+
+<button onclick="saveForm()">Save Settings</button>
+</div>
+
+<div id="config_forms_off" style="display: block">
+<button onclick="showForms()">Configure Settings</button>
+</div>
+
+<div id="debugging" style="display: none">
+    
+<div id="content">
+No results returned.    
+</div>
+<button type="button" onclick="setVarsToCookies()">Save Cookies</button>
+<button type="button" onclick="clearVarsAndCookies()">Reset Cookies</button>
+<p id="demo"></p>
+</div>
+<!--  ===== End Landscape Controls =====  -->
+
+<!--  ===== Start Page Content =====  -->
+
+<p>HCP IoT Web Application on <strong><span id="selected_id">Unknown</span></strong> (<a href="index.html">On-Prem Version</a>)</p>
+<!-- <a href="odata" target="odata">ODATA Folder</a> including examples<br /> -->
+<!-- <a href="/sap/hana/xs/admin/" target="xsadmin">XS Admin</a><br /> -->
+
+<div id="hcp_items">
+<p><strong>Note:</strong> HCP Accounts will automatically log in with SSO certificates.<br />
+If you want to log in with an alternate identity, use a different browser.</p>
+<p>SAP-ID Username: <strong><span id="cockpit_un">USER</span></strong> and Password: <strong><span id="cockpit_pw">PASS</span></strong></p>
+<ul>
+    <li>HCP Cockpit: <a id="cockpit_id" href="" target="cockpit">Cockpit</a> </li>
+    <!-- <li>HCP Subscriptions: <a id="subscriptions_id" href="" target="subscriptions">Subscriptions</a> </li> -->
+    <li>HCP DBS Admin: <a id="dbsadmin_id" href="" target="dbsadmin">DBS Admin</a></li>
+    
+    <!-- <li>HCPms: <a id="hcpms_id" href="" target="hcpms">HCPms</a> </li> -->
+    <!-- <li>HCPiot: <a id="hcpiot_id" href="" target="hcpiot">HCPiot</a> </li> -->
+    <!-- <li>APImgmt: <a id="apimgmt_id" href="" target="apimgmt">APImgmt</a> </li> -->
+</ul>
+</div>
+
+<p>If necessary, set up your HCP HANA Instance DB user.</p>
+<ol>
+    <li>Open the HCP DBS Admin page with the link above.</li>
+    <li>Click on Development Tools: Database User link.</li>
+    <ul>
+        <li>If a user with the same name as the user you're currently logged into exists in the HANA DB instance, you will get the message <em><stron>You have already changed your initial password.</stron></em></li>
+        <li>If this is the case and you've forgotten your password, you will have to get another user to go into the HANA instance and reset your password and optionally activate your user.</li>
+        <li>If this is the first time, you'll be prompted to create a DB user and reset it's initial password on first login.  Save the temporary password as you will need it in the next step.</li>
+    </ul>
+    
+    <li>Click on the link <a id="workbench_id" href="" target="workbench">SAP HANA Web-based Development Workbench</a></li>
+    <li>Log in with your username and reset your password if necessary.</li>
+</ol>
+
+<p>Perform these tasks in this order.</p>
+<ol>
+    <li>Download and expand the <strong><a href="files/iot.zip">iot.zip</a></strong> file so that it's contents are visible next to this browser window.</li>
+    <li>Open <a id="editor_id" href="" target="editor">Editor</a> with Username: <strong><span id="workbench_un">USER</span></strong> and Password: <strong><span id="workbench_pw">PASS</span></strong></li>
+    <li>Create a new package in the <strong>Content</strong> package called <strong>iot</strong> by right clicking on Content -> New -> Package.</li>
+    <li>Right click on the <strong>iot</strong> package and select <strong>Create Application</strong> and pick the Empty application.</li>
+    <li>Select<em>(left click)</em> the <strong>iot</strong> package in order to enable the Package: iot Multi-File Drop Zone.</li>
+    <li>Drag and drop the <strong>index.html</strong> and from the zip folder into the <strong>iot</strong> package Drop Zone.</li>
+    <li>Confirm that the IoT web application works by clicking <a id="new_id" href="/iot/" target="_blank">link</a> which will reload the this page in a new tab on the target server.  <em><strong>Continue working in this new browser tab.</strong></em></li>
+    <li>Continue by creating packages named <strong>data</strong>, <strong>odata</strong>, and <strong>roles</strong> under the <strong>iot</strong> package.</li>
+    <li>Drag the <strong>iot.hdbschema</strong> file from your local folder into the iot/data Drop Zone.</li>
+    <li>Drag the <strong>iot.hdbrole</strong> file from your local folder into the iot/roles Drop Zone.</li>
+    <li>Edit the <strong>iot.hdbrole</strong> file and double check that under the Object Privileges tab that the IOT schema is listed with <em>Execute, Select, Insert, Update, and Delete</em> privileges.</li>
+    <li>Open the Security Editor by clicking <a href="/sap/hana/ide/security/" target="security">Security Admin</a> and edit the <strong><span id="workbench_un2">USER</span></strong> user.  In the Granted Roles tab click the <strong>+</strong> and search/add <strong>iot.roles::iot</strong> and also the <strong>sap.hana.xs.admin.roles::SQLCCAdministrator</strong> role and save.</li>
+    <li>Create a new user called <strong>IOT_USER</strong> and give it the password <strong>Welcome1</strong> and Granted Roles <strong>iot.roles::iot</strong> and save.</li>
+    <li>Now open up new browser <em>(not this one)</em> and browse to <a href="/sap/hana/xs/formLogin/">this logon page</a>.  You will be asked to reset the password. <em>(Make a note of the new password)</em></li>
+    <li>Select the <strong>iot</strong> package so that the Multi-File Drop Zone is visible and drag the <strong>anonymous.xssqlcc</strong> file there to upload it.</li>
+    <li>Launch the XS Admin tool by clicking <a href="/sap/hana/xs/admin/" target="xsadmin">XS Admin</a> <em>(opens a new browser tab)</em>. </li>
+    <li>Click the arrow to the right of <strong>iot</strong> under Packages.</li>
+    <li>Click on <strong>anonymous.xssqlcc</strong> under SQL Connection Configurations.</li>
+    <li>Click <strong>Edit</strong> in the lower right corner of your browser window.</li>
+    <li>Enter User: <strong>IOT_USER</strong> and Password: <em>(the password you made note of above)</em>. Click Save.</li>
+    <li>Edit the <strong>.xsaccess</strong> file and then open the <strong>local xsaccess</strong> file <em>(no preceeding dot)</em> in a text exitor and select all the text. --OR-- manually make the following edits.</li>
+        <ul>
+            <li>Replace the &quot;authentication&quot;: setting with <strong>&quot;authentication&quot;: null</strong>,</li>
+            <li>Change the &quot;prevent_xsrf&quot;: true, setting to <strong>&quot;prevent_xsrf&quot;: false</strong>,</li>
+            <li>Change the &quot;anonymous_connection&quot;: null, setting to <strong>&quot;anonymous_connection&quot;: &quot;iot::anonymous&quot;</strong>,</li>
+        </ul>
+    <li>Go back to the <strong>.xsaccess</strong> file and select all the text and overwrite with the text you copied from the <strong>local xsaccess</strong> file.  Save.</li>
+    <li>Drag the <strong>temp.csv</strong>, <strong>sensors.hdbdd</strong>, <strong>tempId.hdbsequence</strong>, <strong>temp.hdbti</strong>, <strong>crudCommon.xsjslib</strong>, and <strong>tempCreate.xsjslib</strong> files into the iot/data Drop Zone.</li>
+    <li>Drag the <strong>index.html</strong>, <strong>sensors.xsodata</strong>, and <strong>test.html</strong> files into the iot/odata Drop Zone.</li>
+    <li>Now you can use the tests found in the <a href="odata" target="odata">ODATA Folder</a> and exercise your odata interface with provided links.</li>
+</ol>
+
+<p>Package Structure should look like this:</p>
+
+<pre>
+Content
+  |
+  |-iot
+   |-data
+    |-crudCommon.xsjslib
+    |-iot.hdbschema
+    |-sensors.hdbdd
+    |-temp.csv
+    |-temp.hdbti
+    |-tempCreate.xsjslib
+    |-tempId.hdbsequence
+   |-odata
+    |-index.html
+    |-sensors.xsodata
+    |-test.html
+   |-roles
+    |-iot.hdbrole
+   |-.xsaccess
+   |-.xsapp
+   |-anonymous.xssqlcc
+   |-index.html
+</pre>
+<!--
+<em>Emphasized text</em><br>
+<strong>Strong text</strong><br>
+<code>A piece of computer code</code><br>
+<samp>Sample output from a computer program</samp><br>
+<kbd>Keyboard input</kbd><br>
+<var>Variable</var>
+-->
+
+<!--  ===== Start Controls Init =====  -->
+<script>
+    getVarsFromCookies();
+    createForm();
+    fixupLinks();
+</script>
+<!--  ===== End Controls Init =====  -->
+ 
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+namespace iot.data;
+
+@Schema: 'IOT'
+context sensors {
+
+	type KeyType : Integer;
+	@Catalog.tableType : #COLUMN
+	Entity temp {
+		key tempId: KeyType;
+		tempVal: Integer not null;
+		ts: UTCTimestamp not null;
+		created: UTCTimestamp not null;
+	};
+	
+};

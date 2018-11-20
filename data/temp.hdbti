@@ -1,0 +1,8 @@
+import = [
+{
+table = "iot.data::sensors.temp";
+schema = "IOT";
+file = "iot.data:temp.csv";
+header = true;
+} 
+];

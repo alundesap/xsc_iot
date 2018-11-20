@@ -1,0 +1,6 @@
+service namespace "IOT.odata"{
+    "IOT"."iot.data::sensors.temp" as "temp" 
+        create using "iot.data:tempCreate.xsjslib::tempCreate" 
+    ;
+    
+}
